@@ -1,4 +1,6 @@
 import Link from 'next/link' // ← これを追加！
+import { unstable_noStore as noStore } from 'next/cache'
+import { PHASE_PRODUCTION_BUILD } from 'next/constants'
 import { createEmployee } from './actions'
 import { prisma } from '@/lib/prisma' // DB接続を読み込み
 
@@ -6,14 +8,19 @@ export const dynamic = 'force-dynamic' // これを追加！常に最新デー�
 
 // async をつけるのがポイント！
 export default async function Home() {
-  const employees = await prisma.user.findMany({
-    include: {
-      wages: true,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  })
+  noStore()
+
+  const isBuildPhase = process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD
+  const employees = isBuildPhase
+    ? []
+    : await prisma.user.findMany({
+        include: {
+          wages: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      })
 
   return (
     <div className="max-w-7xl mx-auto p-6">
