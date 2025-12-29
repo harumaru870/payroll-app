@@ -1,6 +1,9 @@
 import Link from 'next/link' // ← これを追加！
 import { createEmployee } from './actions'
 import { prisma } from '@/lib/prisma' // DB接続を読み込み
+
+export const dynamic = 'force-dynamic' // これを追加！常に最新データを取得するようになります
+
 // async をつけるのがポイント！
 export default async function Home() {
   const employees = await prisma.user.findMany({
