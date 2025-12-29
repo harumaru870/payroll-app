@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 従業員テーブル
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  createdAt DateTime @default(now()) // 作成日時
+  updatedAt DateTime @updatedAt      // 更新日時
+
+  // リレーション（繋がり）
+  wages     WageSetting[]
+  shifts    Shift[]
+}
+
+// 給与設定履歴テーブル
+// 「いつからこの時給か」を管理する重要テーブルです
+model WageSetting {
+  id             String   @id @default(uuid())
+  userId         String
+  hourlyWage     Int      // 時給
+  transportation Int      // 交通費
+  isMonthlyTransport Boolean @default(false) // trueなら月額定期、falseなら日額
+  effectiveFrom  DateTime // 適用開始日
+  
+  // 親テーブルへのリレーション
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// 勤怠（シフト）テーブル
+model Shift {
+  id          String   @id @default(uuid())
+  userId      String
+  date        DateTime // 勤務日（カレンダー上の日付）
+  startTime   DateTime // 実際の出勤時刻
+  endTime     DateTime? // 退勤時刻（勤務中はnull）
+  breakTime   Int      @default(0) // 休憩時間（分）
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

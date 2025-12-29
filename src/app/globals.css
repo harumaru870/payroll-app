@@ -3,20 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  color-scheme: light; /* force light theme regardless of OS setting */
 }
 
 body {
@@ -24,3 +11,31 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* React Calendar Custom Styles */
+.react-calendar {
+  width: 100% !important;
+  max-width: 100% !important;
+  border: none !important;
+  font-family: inherit !important;
+}
+.react-calendar__tile {
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5px !important;
+}
+.react-calendar__tile--now {
+  background: #f3f4f6 !important;
+}
+.react-calendar__tile--active {
+  background: #3b82f6 !important;
+  color: white !important;
+}
+.react-calendar__tile--active div {
+  color: white !important;
+  background: rgba(255,255,255,0.2) !important;
+}
+
